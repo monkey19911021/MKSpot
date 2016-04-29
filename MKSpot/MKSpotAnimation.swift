@@ -116,13 +116,14 @@ class MKPreLoad: UIView{
         //右边固定点
         addRightSpotAnimation()
         
-        for index in 0...3{
+        for index in 0...2{
             let spot = MKPreLoadSpot(frame: CGRectMake(originX - UNIT_RADIUS, frame.size.height/2 - UNIT_RADIUS, 2 * UNIT_RADIUS, 2 * UNIT_RADIUS), color: UIColor.greenColor());
             spot.tag = index
-            self.addSubview(spot)
-            movingSpots.append(spot)
             //添加关键帧动画
-            addKeyFrameAnimation(spot, index: index)
+            addKeyFrameAnimation(spot)
+            movingSpots.append(spot)
+            
+            self.addSubview(spot)
         }
         
         configureDisplayLink()
@@ -185,7 +186,7 @@ class MKPreLoad: UIView{
     }
     
     //MARK: 移动点动画
-    private func addKeyFrameAnimation(spot: UIView, index: Int){
+    private func addKeyFrameAnimation(spot: UIView){
         let anim = CAKeyframeAnimation(keyPath: "position.x")
         anim.values = [originX,
                        originX,
@@ -200,7 +201,7 @@ class MKPreLoad: UIView{
         anim.keyTimes = [0.0, 0.25, 0.35, 0.38, 0.41, 0.75, 0.85, 0.88, 0.91, 1.0];//sleep 0.4 ratio
         anim.duration = PROCESS_DURING
         anim.repeatCount = MAXFLOAT
-        anim.beginTime = CACurrentMediaTime() + Double(index) * SPOT_DELAY_RATIO * PROCESS_DURING
+        anim.beginTime = CACurrentMediaTime() + Double(spot.tag) * SPOT_DELAY_RATIO * PROCESS_DURING
         spot.layer.addAnimation(anim, forKey: "movingAnim");
         CATransaction.begin()
         CATransaction.setDisableActions(true);
